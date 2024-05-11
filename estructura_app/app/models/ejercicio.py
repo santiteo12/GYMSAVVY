@@ -1,12 +1,14 @@
-from . import db
+from flask_sqlalchemy import SQLAlchemy
+
+db = SQLAlchemy()
 
 class Ejercicio(db.Model):
     __tablename__ = 'ejercicios'
 
-    id_ejercicio = db.Column(db.Integer, primary_key=True)
-    nombre = db.Column(db.String(100), nullable=False)
-    descripcion = db.Column(db.Text, nullable=True)
-    grupo_muscular = db.Column(db.String(50))
+    id = db.Column(db.Integer, primary_key=True)
+    nombre = db.Column(db.String)
+    descripcion = db.Column(db.String)
+    grupo_muscular = db.Column(db.String)
 
-    # Relaciones
-    rutinas = db.relationship('RutinaEjercicio', back_populates='ejercicio')
+    def __repr__(self):
+        return f'<Ejercicio {self.id}>'

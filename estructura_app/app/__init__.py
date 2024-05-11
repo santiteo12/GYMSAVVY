@@ -4,6 +4,14 @@ import os
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 from app.config import config
+    
+# services/__init__.py
+
+from .usuario_service import UsuarioService
+from .rutina_service import RutinaService
+from .ejercicio_service import EjercicioService
+from .sesion_entrenamiento_service import SesionEntrenamientoService
+from .progreso_service import ProgresoService
 
 db = SQLAlchemy()
 migrate = Migrate()
