@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ver Rutinas</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+        }
+
+        header {
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            font-size: 3em;
+            color: #333;
+        }
+
+        form {
+            width: 80%;
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            background-color: #fff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        label {
+            margin-bottom: 10px;
+            display: block;
+            width: 100%;
+            text-align: left;
+        }
+
+        select {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+        #routine-data {
+            width: 80%;
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            background-color: #fff;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            border: 1px solid #ddd;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #333;
+            color: #fff;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        tr:hover {
+            background-color: #ccc;
+        }
+
+        footer {
+            margin-top: 20px;
+            font-size: 0.8em;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Ver Rutinas</h1>
+    </header>
+    <form id="routineForm">
+        <label for="routine">Selecciona una rutina:</label>
+        <select name="routine_id" id="routine">
+            {% for routine in routines %}
+                <option value="{{ routine.id }}">{{ routine.name }}</option>
+            {% endfor %}
+        </select>
+    </form>
+
+    <div id="routine-data">
+        <table>
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Descripción</th>
+                    <th>Ejercicios</th>
+                </tr>
+            </thead>
+            <tbody id="routineDetails">
+                <!-- Filas generadas dinámicamente -->
+            </tbody>
+        </table>
+    </div>
+
+    <footer>
+        <p>&copy; Proyecto FLASK</p>
+    </footer>
+
+    <script>
+        document.querySelector('#routine').addEventListener('change', function() {
+            const routineId = this.value;
+            fetch(`/get_routine_data?routine_id=${routineId}`)
+                .then(response => response.json())
+                .then(data => {
+                    const routineDetails = document.querySelector('#routineDetails');
+                    routineDetails.innerHTML = '';
+
+                    if (data && data.name && data.description && Array.isArray(data.exercises)) {
+                        const exercisesList = data.exercises.length > 0 
+                            ? data.exercises.map(ex => `<li>${ex.name || 'Nombre desconocido'}</li>`).join('')
+                            : 'No hay ejercicios para esta rutina';
+
+                        const row = `
+                            <tr>
+                                <td>${data.name}</td>
+                                <td>${data.description}</td>
+                                <td>
+                                    <ul>
+                                        ${exercisesList}
+                                    </ul>
+                                </td>
+                            </tr>
+                        `;
+                        routineDetails.innerHTML = row;
+                    } else {
+                        routineDetails.innerHTML = '<tr><td colspan="3">No se encontraron datos para esta rutina.</td></tr>';
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+        });
+    </script>
+</body>
+</html>

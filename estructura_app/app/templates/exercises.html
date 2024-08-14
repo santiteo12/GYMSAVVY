@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ejercicios</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+        }
+
+        header {
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            font-size: 3em;
+            color: #333;
+        }
+
+        table {
+            width: 80%;
+            max-width: 800px;
+            margin: 20px auto;
+            border-collapse: collapse;
+            border: 1px solid #ddd;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #333;
+            color: #fff;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        tr:hover {
+            background-color: #ccc;
+        }
+
+        form {
+            width: 80%;
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            background-color: #fff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        label {
+            margin-bottom: 10px;
+            display: block;
+            width: 100%;
+            text-align: left;
+        }
+
+        input, textarea {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+        input[type="submit"] {
+            background-color: #333;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #555;
+        }
+
+        footer {
+            margin-top: 20px;
+            font-size: 0.8em;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Lista de Ejercicios</h1>
+    </header>
+    <table id="exerciseTable">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Descripción</th>
+                <th>Grupo Muscular</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for exercise in exercises %}
+                <tr>
+                    <td>{{ exercise.id }}</td>
+                    <td>{{ exercise.name }}</td>
+                    <td>{{ exercise.description }}</td>
+                    <td>{{ exercise.muscle_group_id }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <h2>Agregar nuevo ejercicio</h2>
+    <form id="exerciseForm">
+        <label for="name">Nombre:</label>
+        <input type="text" id="name" name="name" required>
+    
+        <label for="description">Descripción:</label>
+        <textarea id="description" name="description" required></textarea>
+    
+        <label for="muscle_group_id">Grupo Muscular:</label>
+        <select id="muscle_group_id" name="muscle_group_id" required>
+            {% for muscle_group in muscle_groups %}
+                <option value="{{ muscle_group.id }}">{{ muscle_group.name }}</option>
+            {% endfor %}
+        </select>
+    
+        <input type="submit" value="Agregar Ejercicio">
+    </form>
+
+    <footer>
+        <p>&copy; Proyecto FLASK</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            fetch('/exercises')
+                .then(response => response.json())
+                .then(data => {
+                    const tableBody = document.querySelector('#exerciseTable tbody');
+                    data.forEach(exercise => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${exercise.id}</td>
+                            <td>${exercise.name}</td>
+                            <td>${exercise.description}</td>
+                            <td>${exercise.muscle_group_id}</td>
+                        `;
+                        tableBody.appendChild(row);
+                    });
+                });
+        
+            document.querySelector('#exerciseForm').addEventListener('submit', function(event) {
+                event.preventDefault();
+                const formData = new FormData(this);
+                const data = {
+                    name: formData.get('name'),
+                    description: formData.get('description'),
+                    muscle_group_id: formData.get('muscle_group_id')
+                };
+                fetch('/exercises', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                })
+                .then(response => response.json())
+                .then(exercise => {
+                    const tableBody = document.querySelector('#exerciseTable tbody');
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${exercise.id}</td>
+                        <td>${exercise.name}</td>
+                        <td>${exercise.description}</td>
+                        <td>${exercise.muscle_group_id}</td>
+                    `;
+                    tableBody.appendChild(row);
+                    this.reset();
+                    // Agregamos un evento de actualización a la tabla
+                    fetch('/exercises')
+                        .then(response => response.json())
+                        .then(data => {
+                            const tableBody = document.querySelector('#exerciseTable tbody');
+                            tableBody.innerHTML = '';
+                            data.forEach(exercise => {
+                                const row = document.createElement('tr');
+                                row.innerHTML = `
+                                    <td>${exercise.id}</td>
+                                    <td>${exercise.name}</td>
+                                    <td>${exercise.description}</td>
+                                    <td>${exercise.muscle_group_id}</td>
+                                `;
+                                tableBody.appendChild(row);
+                            });
+                        });
+                })
+                .catch(error => console.error('Error:', error));
+            });
+        });
+    </script>
+</body>
+</html>

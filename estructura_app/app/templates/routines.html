@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Routine App</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            overflow: auto;
+        }
+
+        header {
+            margin-bottom: 20px;
+        }
+
+        h1, h2 {
+            color: #333;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 3em;
+        }
+
+        table {
+            width: 80%;
+            max-width: 800px;
+            margin: 20px auto;
+            border-collapse: collapse;
+            border: 1px solid #ddd;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #333;
+            color: #fff;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        tr:hover {
+            background-color: #ccc;
+        }
+
+        form {
+            width: 80%;
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            background-color: #fff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        label {
+            margin-bottom: 10px;
+            display: block;
+            width: 100%;
+            text-align: left;
+        }
+
+        input, textarea, select {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+        input[type="submit"], button[type="submit"] {
+            background-color: #333;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        input[type="submit"]:hover, button[type="submit"]:hover {
+            background-color: #555;
+        }
+
+        footer {
+            margin-top: 20px;
+            font-size: 0.8em;
+            color: #666;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Routine App</h1>
+    </header>
+
+    <h2>Routines</h2>
+    <table id="routines-table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Description</th>
+            </tr>
+        </thead>
+        <tbody id="routines-list">
+            {% for routine in routines %}
+                <tr>
+                    <td>{{ routine.id }}</td>
+                    <td>{{ routine.name }}</td>
+                    <td>{{ routine.description }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <h2>Exercises</h2>
+    <table id="exerciseTable">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Muscle Group ID</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for exercise in exercises %}
+                <tr>
+                    <td>{{ exercise.id }}</td>
+                    <td>{{ exercise.name }}</td>
+                    <td>{{ exercise.description }}</td>
+                    <td>{{ exercise.muscle_group_id }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- Forms for creating, deleting routines and adding exercises to routines -->
+    <h2>Create Routine</h2>
+    <form id="create-routine-form">
+        <label for="create-name">Name:</label>
+        <input type="text" id="create-name" name="name">
+        <label for="create-description">Description:</label>
+        <input type="text" id="create-description" name="description">
+        <button type="submit">Create Routine</button>
+    </form>
+
+    <h2>Delete Routine</h2>
+    <form id="delete-routine-form">
+        <label for="delete-routine-id">Routine ID:</label>
+        <input type="number" id="delete-routine-id" name="routine-id">
+        <button type="submit">Delete Routine</button>
+    </form>
+
+    <h2>Add Exercise to Routine</h2>
+    <form id="add-exercise-to-routine-form">
+        <label for="add-routine-id">Routine ID:</label>
+        <input type="number" id="add-routine-id" name="routine-id">
+        <label for="add-exercise-id">Exercise ID:</label>
+        <input type="number" id="add-exercise-id" name="exercise-id">
+        <button type="submit">Add Exercise to Routine</button>
+    </form>
+
+    <footer>
+        <p>&copy; Proyecto FLASK</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get all routines
+            fetch('/routines')
+                .then(response => response.json())
+                .then(data => {
+                    const routinesTableBody = document.getElementById('routines-list');
+                    routinesTableBody.innerHTML = '';  // Asegúrate de limpiar antes de añadir
+                    data.forEach(routine => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${routine.id}</td>
+                            <td>${routine.name}</td>
+                            <td>${routine.description}</td>
+                        `;
+                        routinesTableBody.appendChild(row);
+                    });
+                });
+        
+            // Get all exercises
+            fetch('/exercises')
+                .then(response => response.json())
+                .then(data => {
+                    const exercisesTableBody = document.querySelector('#exerciseTable tbody');
+                    exercisesTableBody.innerHTML = '';  // Asegúrate de limpiar antes de añadir
+                    data.forEach(exercise => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${exercise.id}</td>
+                            <td>${exercise.name}</td>
+                            <td>${exercise.description}</td>
+                            <td>${exercise.muscle_group_id}</td>
+                        `;
+                        exercisesTableBody.appendChild(row);
+                    });
+                });
+        });
+        
+
+            // Create routine
+            document.getElementById('create-routine-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                const name = document.getElementById('create-name').value;
+                const description = document.getElementById('create-description').value;
+                fetch('/routines', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, description })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    const routinesTableBody = document.getElementById('routines-list');
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${data.id}</td>
+                        <td>${data.name}</td>
+                        <td>${data.description}</td>
+                    `;
+                    routinesTableBody.appendChild(row);
+                });
+            });
+
+            // Delete routine
+            document.getElementById('delete-routine-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                const routineId = document.getElementById('delete-routine-id').value;
+                fetch(`/routines/${routineId}`, {
+                    method: 'DELETE'
+                })
+                .then(response => response.json())
+                .then(() => {
+                    const routinesTableBody = document.getElementById('routines-list');
+                    Array.from(routinesTableBody.children).forEach(row => {
+                        if (row.children[0].textContent == routineId) {
+                            routinesTableBody.removeChild(row);
+                        }
+                    });
+                });
+            });
+
+            // Add Exercise to Routine
+            document.getElementById('add-exercise-to-routine-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                const routineId = document.getElementById('add-routine-id').value;
+                const exerciseId = document.getElementById('add-exercise-id').value;
+                fetch(`/routines/${routineId}/exercises/${exerciseId}`, {
+                    method: 'POST'
+                })
+                .then(response => response.json())
+                .then(() => {
+                    alert('Exercise added to routine.');
+                });
+            });
+        ;
+    </script>
+</body>
+</html>

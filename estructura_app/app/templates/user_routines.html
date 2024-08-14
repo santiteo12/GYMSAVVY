@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rutinas de usuario</title>
+    <style>
+        /* Colores */
+        :root {
+          --primary-color: #6c5ce7; /* Violeta oscuro */
+          --secondary-color: #333; /* Gris oscuro */
+          --background-color: #f7f7f7; /* Gris claro */
+          --accent-color: #9b59b6; /* Violeta claro */
+        }
+
+        /* Estilos generales */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--background-color);
+            transition: background-color 0.5s; /* Animación de fondo */
+        }
+
+        h1 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+            transition: color 0.5s; /* Animación de título */
+        }
+
+        h1 {
+            font-size: 24px;
+        }
+
+        /* Lista de rutinas */
+        ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        li {
+            margin-bottom: 10px;
+        }
+
+        a {
+            text-decoration: none;
+            color: var(--primary-color);
+            transition: color 0.5s; /* Animación de enlace */
+        }
+
+        a:hover {
+            color: var(--accent-color); /* Animación de enlace al pasar el mouse */
+        }
+    </style>
+</head>
+<body>
+    <h1>Rutinas de usuario {{ user_id }}</h1>
+    <ul>
+        {% for routine in routines %}
+            <li>
+                <a href="{{ url_for('routines.get_routine', routine_id=routine.id) }}">{{ routine.name }}</a>
+            </li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

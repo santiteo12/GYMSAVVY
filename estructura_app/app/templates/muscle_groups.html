@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grupos Musculares</title>
+    <style>
+        /* Colores */
+        :root {
+          --primary-color: #6c5ce7; /* Violeta oscuro */
+          --secondary-color: #333; /* Gris oscuro */
+          --background-color: #f7f7f7; /* Gris claro */
+          --accent-color: #9b59b6; /* Violeta claro */
+        }
+
+        /* Estilos generales */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--background-color);
+            transition: background-color 0.5s; /* Animación de fondo */
+        }
+
+        h1 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+            transition: color 0.5s; /* Animación de título */
+        }
+
+        h1 {
+            font-size: 24px;
+        }
+
+        /* Lista */
+        ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        li {
+            margin-bottom: 10px;
+        }
+
+        a {
+            text-decoration: none;
+            color: var(--primary-color);
+            transition: color 0.5s; /* Animación de enlace */
+        }
+
+        a:hover {
+            color: var(--accent-color);
+        }
+
+        /* Formulario */
+        form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            border: 1px solid var(--secondary-color);
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Sombra en el formulario */
+            transition: box-shadow 0.5s; /* Animación de sombra */
+        }
+
+        label {
+            margin-bottom: 10px;
+        }
+
+        input, textarea {
+            padding: 10px;
+            border: 1px solid var(--secondary-color);
+            border-radius: 5px;
+            width: 100%;
+            margin-bottom: 20px;
+            transition: border-color 0.5s; /* Animación de borde */
+        }
+
+        input[type="submit"] {
+            background-color: var(--primary-color);
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.5s; /* Animación de botón */
+        }
+
+        input[type="submit"]:hover {
+            background-color: #5c4ccf; /* Violeta oscuro más claro */
+        }
+
+        /* Animaciones */
+        body:hover {
+            background-color: #f2f2f2; /* Animación de fondo al pasar el mouse */
+        }
+
+        h1:hover {
+            color: var(--accent-color); /* Animación de título al pasar el mouse */
+        }
+
+        input:focus, textarea:focus {
+            border-color: var(--accent-color); /* Animación de borde al enfocar */
+        }
+
+        form:hover {
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.2); /* Animación de sombra al pasar el mouse */
+        }
+    </style>
+</head>
+<body>
+    <h1>Grupos Musculares</h1>
+    <ul>
+        {% for muscle_group in muscle_groups %}
+            <li>
+                <a href="{{ url_for('muscle_group.get_muscle_group', muscle_group_id=muscle_group.id) }}">{{ muscle_group.name }}</a>
+            </li>
+        {% endfor %}
+    </ul>
+    <form action="{{ url_for('muscle_group.create_muscle_group') }}" method="post">
+        <label for="name">Nombre del grupo muscular:</label>
+        <input type="text" id="name" name="name">
+        <input type="submit" value="Crear">
+    </form>
+</body>
+</html>

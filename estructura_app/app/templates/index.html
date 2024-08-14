@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GymSavvy</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+        }
+
+        header {
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            font-size: 3em;
+            color: #333;
+            animation: pulse 2s infinite; /* Aplicar animación de pulso */
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+                color: #333;
+            }
+            50% {
+                transform: scale(1.1);
+                color: #555;
+            }
+            100% {
+                transform: scale(1);
+                color: #333;
+            }
+        }
+
+        h1:hover {
+            color: #007bff; /* Cambia el color al pasar el mouse */
+        }
+
+        div {
+            text-align: center;
+        }
+
+        button {
+            background-color: #333;
+            color: #fff;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 10px;
+            font-size: 1em;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+
+        button:hover {
+            background-color: #555;
+            transform: translateY(-3px);
+        }
+
+        footer {
+            margin-top: 20px;
+            font-size: 0.8em;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>GymSavvy</h1>
+    </header>
+    <div>
+        <button onclick="location.href='/exercises'">Agregar Ejercicios</button>
+        <button onclick="location.href='/routines'">Crear Rutinas</button>
+        <button onclick="location.href='/view_routine'">Ver Rutinas</button>
+    </div>
+
+    <footer>
+        <p>&copy; Proyecto FLASK</p>
+    </footer>
+</body>
+</html>
