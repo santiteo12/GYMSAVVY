@@ -1,0 +1,40 @@
+1.Iniciar el entorno virtual
+
+python -m virtualenv venv
+
+2.Activamos el entorno virtual
+
+venv\Scripts\activate
+
+3.Instalar los requerimientos
+
+pip install -r requirements.txt o .\requirements.txt
+
+Despues de instalar los requerimientos hagan lo siguiente: ctrl+shift+P ponen: python:selec interpreter y cambian al global, se van a dar cuenta que ahora en el archivo app.py les toma la importacion
+de flask, vuelven a hacer ctrl+shift+P ponen: python:selec interpreter y seleccionan el recommended
+
+4. En el PGadmin4, vayan hasta abajo donde dice Roles de Login/Grupo. Se crean un usuario Y NO SE OLVIDEN EL NOMBRE Y LA CONTRASEÑA, porque con eso entran a la base de datos
+
+5. Borren su anterior base de datos y creen otra con el mismo nombre "gymsavvy" y de dueño ponen el usuario que se acaban de crear
+
+6. En los archivos app.py, \migrations\alembic.ini y \app\config\config.py cambien la siguiente linea
+
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://sunombre:sucontraseña@localhost:5432/gymsavvy'
+
+7. Ahora prueben sin borrar la carpeta migrations
+
+flask db migrate -m "Migración Inicial"
+
+flask db upgrade
+
+8. Si no les tira error, vayan al PGadmin4, esquemas, public y actualicen tablas, en total tiene que aparecer 8
+
+9. En el caso de que les tire error
+
+flask db init
+
+flask db migrate -m "Migración Inicial"
+
+flask db upgrade
+
+10. Repitan el paso 8
